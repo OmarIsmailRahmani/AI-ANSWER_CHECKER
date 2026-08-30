@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% block title %}{{ submission.student_fname }} {{ submission.student_lname }}{% endblock %}
+{% block content %}
+<div class="container-fluid px-4 mb-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb bg-white px-0">
+            <li class="breadcrumb-item"><a href="{% url 'subjects' %}">Subjects</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'subject_detail' submission.subject.id %}">{{ submission.subject.name }}</a></li>
+            <li class="breadcrumb-item active">{{ submission.student_fname }} {{ submission.student_lname }}</li>
+        </ol>
+    </nav>
+
+    <!-- Hero: identity + headline score -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap bg-white rounded shadow-sm p-4 mb-4">
+        <div>
+            <h4 class="mb-1">{{ submission.student_fname }} {{ submission.student_lname }}</h4>
+            <div class="text-muted small">
+                {{ submission.subject.name }} &middot; Submitted {{ submission.uploaded_at|date:"M d, Y \a\t H:i" }}
+            </div>
+        </div>
+        <div class="text-right">
+            {% if evaluation %}
+            <div class="d-flex align-items-center flex-wrap justify-content-end">
+                <h1 class="display-4 font-weight-bold mb-0 mr-3 {% if evaluation.score >= 75 %}text-success{% elif evaluation.score >= 50 %}text-warning{% else %}text-danger{% endif %}">{{ evaluation.score }}%</h1>
+                <span class="badge {% if evaluation.confidence == "High" %}badge-success{% elif evaluation.confidence == "Medium" %}badge-warning text-dark{% elif evaluation.confidence == "Low" %}badge-danger{% else %}badge-secondary{% endif %} p-2">Confidence: {{ evaluation.confidence }}</span>
+            </div>
+            {% else %}
+            <span class="badge badge-warning p-2">Not Graded Yet</span>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Working area: answer sheet and per-question evaluation side by side, both large -->
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <div class="border p-2 rounded bg-white shadow-sm h-100">
+                {% if ".pdf" in submission.answer_sheet.url|lower %}
+                    <iframe id="answerPanelFrame" src="{{ submission.answer_sheet.url }}" width="100%" height="730px" class="rounded border-0"></iframe>
+                {% else %}
+                    <div id="answerPanel" style="max-height: 730px; overflow-y: auto;">
+                        <img src="{{ submission.answer_sheet.url }}" class="img-fluid rounded" alt="Student Sheet">
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center flex-wrap">
+                    <h6 class="mb-0">Per-Question Breakdown</h6>
+                    {% if evaluation.rubric_data %}
+                    <div id="questionSummary">
+                        <span class="badge badge-success" id="summary-correct">Correct: 0</span>
+                        <span class="badge badge-danger" id="summary-wrong">Wrong: 0</span>
+                        <span class="badge badge-warning text-dark" id="summary-doubt">Doubt: 0</span>
+                    </div>
+                    {% endif %}
+                </div>
+                {% if evaluation %}
+                <div class="list-group list-group-flush" id="questionList" style="max-height: 730px; overflow-y: auto;">
+                    {% for q in evaluation.rubric_data %}
+                        <div class="list-group-item" style="border-left: 4px solid {% if q.status == "Correct" %}#28a745{% elif q.status == "Wrong" %}#dc3545{% elif q.status == "Doubt" %}#ffc107{% else %}#6c757d{% endif %};">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <strong>{{ q.question_number }}</strong>
+                                <div>
+                                    <span class="badge {% if q.status == "Correct" %}badge-success{% elif q.status == "Wrong" %}badge-danger{% elif q.status == "Doubt" %}badge-warning text-dark{% else %}badge-secondary{% endif %}">{{ q.status }}</span>
+                                    <span class="badge badge-light border ml-1">{{ q.awarded_points }} / {{ q.max_points }} pts</span>
+                                </div>
+                            </div>
+                            <p class="mb-1 text-muted" style="font-size: 0.9em;"><em>"{{ q.student_answer_snippet }}"</em></p>
+                            <p class="mb-0" style="font-size: 0.95em;"><strong>AI Note:</strong> {{ q.reasoning }}</p>
+                        </div>
+                    {% empty %}
+                        <div class="list-group-item text-muted text-center">No question breakdown available.</div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="card-body text-center d-flex flex-column justify-content-center" style="min-height: 400px;">
+                    <h5 class="text-warning">Not Graded Yet</h5>
+                    <p class="text-muted mb-0">This submission doesn't have an evaluation. Grading may still be in progress, or it may have failed.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Summary: narrative feedback, secondary to the working area above -->
+    {% if evaluation %}
+    <div class="row">
+        <div class="col-12 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    <h6 class="mb-0">Summary &amp; Pedagogical Feedback</h6>
+                </div>
+                <div class="card-body">
+                    <div class="text-dark">{{ evaluation.feedback|linebreaks }}</div>
+                    {% if evaluation.book_citations %}
+                    <div class="alert alert-secondary mb-0 mt-3">
+                        <strong>Textbook Citations:</strong><br>
+                        <small>{{ evaluation.book_citations }}</small>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="d-flex justify-content-between align-items-center">
+        <a href="{% url 'subject_detail' submission.subject.id %}" class="btn btn-outline-secondary">Back to Subject</a>
+
+        <!-- Delete Submission Button -->
+        <form action="{% url 'submission_delete' submission.id %}" method="POST" onsubmit="return confirm('Are you sure you want to delete this student paper? The AI evaluation will be permanently lost.');">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Delete Paper</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var rows = document.querySelectorAll('#questionList .list-group-item');
+    var counts = { correct: 0, wrong: 0, doubt: 0 };
+    rows.forEach(function (row) {
+        var badge = row.querySelector('.badge-success, .badge-danger, .badge-warning');
+        if (!badge) return;
+        if (badge.classList.contains('badge-success')) counts.correct++;
+        else if (badge.classList.contains('badge-danger')) counts.wrong++;
+        else if (badge.classList.contains('badge-warning')) counts.doubt++;
+    });
+    var correctEl = document.getElementById('summary-correct');
+    var wrongEl = document.getElementById('summary-wrong');
+    var doubtEl = document.getElementById('summary-doubt');
+    if (correctEl) correctEl.textContent = 'Correct: ' + counts.correct;
+    if (wrongEl) wrongEl.textContent = 'Wrong: ' + counts.wrong;
+    if (doubtEl) doubtEl.textContent = 'Doubt: ' + counts.doubt;
+});
+</script>
+{% endblock %}

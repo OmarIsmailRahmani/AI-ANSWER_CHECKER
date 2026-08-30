@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Create New Subject{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="card shadow" style="max-width: 600px; margin: 0 auto;">
+        <div class="card-header bg-dark text-white">
+            <h4 class="mb-0">Create New Subject</h4>
+        </div>
+        <div class="card-body">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-success w-100">Save Subject & Extract Textbook</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

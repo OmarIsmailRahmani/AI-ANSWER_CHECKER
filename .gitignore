@@ -1,0 +1,18 @@
+# --- Python / Virtual Environments ---
+.venv/
+venv/
+*.pyc
+__pycache__/
+
+# --- Django Specific ---
+db.sqlite3
+media/
+.env
+
+# --- macOS Specific ---
+.DS_Store
+
+# --- CRITICAL: AI Credentials ---
+# This prevents your Google JSON key from going to GitHub
+credentials/
+*.json

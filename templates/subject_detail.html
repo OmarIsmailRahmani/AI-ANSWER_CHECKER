@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block title %}{{ subject.name }}{% endblock %}
+{% block content %}
+<div class="container">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'subjects' %}">Subjects</a></li>
+            <li class="breadcrumb-item active">{{ subject.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="row mt-4">
+        <!-- Upload Form -->
+        <div class="col-md-4">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Upload Student Paper</h5>
+                </div>
+                <div class="card-body">
+                    <form action="{% url 'exam_create' subject.id %}" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" class="btn btn-success w-100">Upload & Evaluate</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submissions List -->
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Student Submissions</h5>
+                    <span class="badge badge-light">{{ submissions.count }} Total</span>
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for sub in submissions %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>{{ sub.student_fname }} {{ sub.student_lname }}</strong>
+                            {% if sub.student_id_number %}({{ sub.student_id_number }}){% endif %}<br>
+                            <small class="text-muted">Uploaded: {{ sub.uploaded_at|date:"M d, Y" }}</small>
+                        </div>
+                        <div>
+                            {% if sub.evaluation %}
+                                <span class="badge badge-success mr-2">{{ sub.evaluation.score }}%</span>
+                                <a href="{% url 'submission_detail' sub.id %}" class="btn btn-sm btn-outline-info">View Report</a>
+                            {% else %}
+                                <span class="badge badge-warning">Failed/Pending</span>
+                            {% endif %}
+                        </div>
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item text-center text-muted">No student submissions yet.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

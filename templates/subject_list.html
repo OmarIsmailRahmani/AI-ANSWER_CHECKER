@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}My Subjects{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>My Subjects</h2>
+        <a href="{% url 'subject_create' %}" class="btn btn-primary">+ Add New Subject</a>
+    </div>
+
+    <div class="row">
+        {% for subject in subjects %}
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">{{ subject.name }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">{{ subject.code }}</h6>
+                    <p class="card-text">
+                        <small>Submissions: {{ subject.submissions.count }}</small><br>
+                        {% if subject.reference_book %}
+                            <small class="text-success">Textbook: Uploaded</small>
+                        {% else %}
+                            <small><span class="badge badge-warning">Textbook Missing</span></small>
+                        {% endif %}
+                    </p>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <a href="{% url 'subject_detail' subject.id %}" class="btn btn-sm btn-outline-info">Manage Submissions</a>
+
+                        <!-- Delete Subject Button -->
+                        <form action="{% url 'subject_delete' subject.id %}" method="POST" onsubmit="return confirm('WARNING: Are you sure you want to delete {{ subject.name|escapejs }}? All uploaded textbooks, student submissions, and AI grades will be permanently destroyed. This cannot be undone.');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-warning">No subjects created yet. Add a subject and upload its textbook to begin.</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,106 @@
+:root {
+    --brand-primary: #4f46e5;
+    --brand-primary-dark: #4338ca;
+    --brand-ink: #1e1b2e;
+    --brand-bg: #f6f7fb;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--brand-bg);
+    color: var(--brand-ink);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+}
+
+/* Navbar */
+.navbar.bg-dark {
+    background-color: var(--brand-ink) !important;
+}
+.navbar-brand {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+/* Buttons */
+.btn {
+    border-radius: 8px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+}
+.btn-primary {
+    background-color: var(--brand-primary);
+    border-color: var(--brand-primary);
+}
+.btn-primary:hover, .btn-primary:focus {
+    background-color: var(--brand-primary-dark);
+    border-color: var(--brand-primary-dark);
+}
+.btn-outline-primary {
+    color: var(--brand-primary);
+    border-color: var(--brand-primary);
+}
+.btn-outline-primary:hover {
+    background-color: var(--brand-primary);
+    border-color: var(--brand-primary);
+}
+
+/* Cards */
+.card {
+    border: none;
+    border-radius: 12px;
+}
+.card.shadow-sm, .card.shadow {
+    box-shadow: 0 2px 10px rgba(30, 27, 46, 0.06) !important;
+}
+.card-header {
+    border-radius: 12px 12px 0 0 !important;
+    font-weight: 600;
+}
+
+/* Badges */
+.badge {
+    border-radius: 6px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+}
+
+/* Alerts */
+.alert {
+    border: none;
+    border-radius: 10px;
+}
+
+/* Jumbotron override for lighter, card-like feel */
+.jumbotron {
+    border-radius: 16px;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 767.98px) {
+    .display-3 { font-size: 2.5rem; }
+    .display-4 { font-size: 2.1rem; }
+    .display-5 { font-size: 1.75rem; }
+    .lead { font-size: 1.05rem; }
+
+    .container-fluid.px-4 {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
+
+    /* Answer sheet / per-question panels on submission_detail.html: full-height
+       730px boxes make sense on desktop but eat the whole phone viewport */
+    #answerPanel, #answerPanelFrame, #questionList {
+        max-height: 380px !important;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .btn-lg {
+        display: block;
+        width: 100%;
+        margin: 0.4rem 0 !important;
+    }
+}

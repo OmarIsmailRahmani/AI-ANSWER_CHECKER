@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="jumbotron bg-white shadow-sm">
+        <h1 class="display-5">Welcome, {{ user.username }}!</h1>
+        <p class="lead">You're logged in. Manage your subjects and grade student answer sheets from here.</p>
+        <hr class="my-4">
+        <a href="{% url 'subjects' %}" class="btn btn-primary btn-lg">My Subjects</a>
+        <a href="{% url 'subject_create' %}" class="btn btn-outline-secondary btn-lg">+ Add New Subject</a>
+    </div>
+</div>
+{% endblock %}
