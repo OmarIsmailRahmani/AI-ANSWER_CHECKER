@@ -45,6 +45,7 @@ and written feedback the teacher can review.
 4. Go to `http://127.0.0.1:8000/`, register an account, and you're in.
 
 ## Notes
+Sample textbook + answer sheet for testing are in sample_data/
 
 Grading a submission takes a few seconds since it's a real API call to Gemini each time, so don't worry
 if the upload page seems to hang a bit after you submit. Just wait patiently! 
