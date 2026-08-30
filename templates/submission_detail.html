@@ -68,7 +68,10 @@
                                 </div>
                             </div>
                             <p class="mb-1 text-muted" style="font-size: 0.9em;"><em>"{{ q.student_answer_snippet }}"</em></p>
-                            <p class="mb-0" style="font-size: 0.95em;"><strong>AI Note:</strong> {{ q.reasoning }}</p>
+                            <p class="mb-1" style="font-size: 0.95em;"><strong>AI Note:</strong> {{ q.reasoning }}</p>
+                            {% if q.citation %}
+                            <p class="mb-0 text-muted" style="font-size: 0.85em;"><strong>Source:</strong> {{ q.citation }}</p>
+                            {% endif %}
                         </div>
                     {% empty %}
                         <div class="list-group-item text-muted text-center">No question breakdown available.</div>

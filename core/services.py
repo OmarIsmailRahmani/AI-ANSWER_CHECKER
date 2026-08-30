@@ -35,7 +35,10 @@ def evaluate_exam_submission(
        - "Correct": Fully accurate based on the textbook.
        - "Wrong": Factually incorrect or contradicts the textbook.
        - "Doubt": Partial credit, ambiguous handwriting, or concepts not found in the textbook requiring human teacher review.
-    4. Calculate the overall total_score out of 100 based on the individual question points.
+    4. For each question, name the specific part of the Reference Material (e.g. unit, section, or chapter
+       title/number) that you used to judge that answer. If nothing in the Reference Material covers that
+       question, say so plainly instead of guessing.
+    5. Calculate the overall total_score out of 100 based on the individual question points.
 
     Return ONLY a JSON object formatted as:
     {{
@@ -47,10 +50,11 @@ def evaluate_exam_submission(
         {{
             "question_number": "Q1",
             "student_answer_snippet": "Short snippet of what they wrote...",
-            "status": "Correct", 
+            "status": "Correct",
             "awarded_points": 10,
             "max_points": 10,
-            "reasoning": "Explanation of why it is correct, wrong, or why the AI has doubt."
+            "reasoning": "Explanation of why it is correct, wrong, or why the AI has doubt.",
+            "citation": "The specific unit/section/chapter of the Reference Material this question was graded against."
         }}
       ],
       "pedagogical_feedback": "Overall summary of the student's performance."
