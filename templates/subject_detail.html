@@ -10,23 +10,21 @@
     </nav>
 
     <div class="row mt-4">
-        <!-- Upload Form -->
         <div class="col-md-4">
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-primary text-white">
                     <h5 class="mb-0">Upload Student Paper</h5>
                 </div>
                 <div class="card-body">
-                    <form action="{% url 'exam_create' subject.id %}" method="POST" enctype="multipart/form-data">
+                    <form id="uploadForm" action="{% url 'exam_create' subject.id %}" method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
                         {{ form.as_p }}
-                        <button type="submit" class="btn btn-success w-100">Upload & Evaluate</button>
+                        <button type="submit" class="btn btn-success w-100" id="uploadBtn">Upload & Evaluate</button>
                     </form>
                 </div>
             </div>
         </div>
 
-        <!-- Submissions List -->
         <div class="col-md-8">
             <div class="card shadow-sm">
                 <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
@@ -58,4 +56,21 @@
         </div>
     </div>
 </div>
+
+<div id="gradingOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 2000; color: #fff; text-align: center;">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+        <div class="spinner-border text-light mb-3" role="status" style="width: 3rem; height: 3rem;"></div>
+        <h4>Grading in progress...</h4>
+        <p class="mb-0">Please wait and don't close or refresh this page.<br>This can take up to a minute.</p>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('uploadForm').addEventListener('submit', function () {
+    document.getElementById('uploadBtn').disabled = true;
+    document.getElementById('gradingOverlay').style.display = 'block';
+});
+</script>
 {% endblock %}

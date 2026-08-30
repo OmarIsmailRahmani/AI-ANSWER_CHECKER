@@ -25,7 +25,6 @@
                     <div class="d-flex justify-content-between align-items-center mt-3">
                         <a href="{% url 'subject_detail' subject.id %}" class="btn btn-sm btn-outline-info">Manage Submissions</a>
 
-                        <!-- Delete Subject Button -->
                         <form action="{% url 'subject_delete' subject.id %}" method="POST" onsubmit="return confirm('WARNING: Are you sure you want to delete {{ subject.name|escapejs }}? All uploaded textbooks, student submissions, and AI grades will be permanently destroyed. This cannot be undone.');">
                             {% csrf_token %}
                             <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>

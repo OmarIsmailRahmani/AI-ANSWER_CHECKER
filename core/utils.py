@@ -1,5 +1,7 @@
 import PyPDF2
-
+'''
+this functions as an extractor from the uploaded pdf files
+'''
 def extract_text_from_file(file_path):
     """Extracts text from a PDF or TXT file."""
     text = ""

@@ -1,3 +1,6 @@
+'''
+This is the main service for the whole application, where gemini api is being used to evaluate answer sheets
+'''
 import os
 import json
 import re
@@ -12,13 +15,12 @@ def evaluate_exam_submission(
     subject_book_context: str,
     tutor_solution_text: str = None
 ):
-    # 1. Route PDF to File API, Images to Pillow
     is_pdf = student_image_path.lower().endswith('.pdf')
     if is_pdf:
         student_file = client.files.upload(file=student_image_path)
     else:
         student_file = Image.open(student_image_path)
-
+    #this is the prompt which i am using for evaluating answer sheets with two contexts , one optional and the other compulsory
     prompt = f"""
     You are an academic evaluator grading a student's handwritten answer sheet.
 
@@ -66,13 +68,13 @@ def evaluate_exam_submission(
         contents=[prompt, student_file],
     )
     
-    # 2. Cleanup PDF from Google servers to ensure data privacy
+    
     if is_pdf:
-        client.files.delete(name=student_file.name)
+        client.files.delete(name=student_file.name) #cleaning pdf for data privacy 
 
     raw_text = response.text
 
-    match = re.search(r'\{.*\}', raw_text, re.DOTALL)
+    match = re.search(r'\{.*\}', raw_text, re.DOTALL) #{...} for pulling this out incase it comes in gemini response
     if match:
         return json.loads(match.group(0))
     return {

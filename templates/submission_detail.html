@@ -10,7 +10,6 @@
         </ol>
     </nav>
 
-    <!-- Hero: identity + headline score -->
     <div class="d-flex justify-content-between align-items-center flex-wrap bg-white rounded shadow-sm p-4 mb-4">
         <div>
             <h4 class="mb-1">{{ submission.student_fname }} {{ submission.student_lname }}</h4>
@@ -30,7 +29,6 @@
         </div>
     </div>
 
-    <!-- Working area: answer sheet and per-question evaluation side by side, both large -->
     <div class="row">
         <div class="col-lg-6 mb-4">
             <div class="border p-2 rounded bg-white shadow-sm h-100">
@@ -87,7 +85,6 @@
         </div>
     </div>
 
-    <!-- Summary: narrative feedback, secondary to the working area above -->
     {% if evaluation %}
     <div class="row">
         <div class="col-12 mb-4">
@@ -112,7 +109,6 @@
     <div class="d-flex justify-content-between align-items-center">
         <a href="{% url 'subject_detail' submission.subject.id %}" class="btn btn-outline-secondary">Back to Subject</a>
 
-        <!-- Delete Submission Button -->
         <form action="{% url 'submission_delete' submission.id %}" method="POST" onsubmit="return confirm('Are you sure you want to delete this student paper? The AI evaluation will be permanently lost.');">
             {% csrf_token %}
             <button type="submit" class="btn btn-danger">Delete Paper</button>
